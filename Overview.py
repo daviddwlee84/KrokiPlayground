@@ -22,18 +22,27 @@ with st.expander("Kroki Cheatsheet"):
 
 mode: Literal["From Demo", "Manual"] = st.selectbox("Mode", ["From Demo", "Manual"])
 
+
+def get_graph_type(path: str) -> str:
+    return os.path.basename(os.path.dirname(path))
+
+
 if mode == "From Demo":
     example_file = st.selectbox(
         "Example",
         glob(os.path.join(curr_dir, "examples/*/*")),
-        format_func=lambda x: f"{os.path.basename(os.path.dirname(x))}/{os.path.basename(x)}",
+        format_func=lambda x: f"{get_graph_type(x)}/{os.path.basename(x)}",
     )
     # https://stackoverflow.com/questions/541390/extracting-extension-from-filename-in-python
-    extension = os.path.splitext(example_file)[1].strip(".")
-    graph_type = config.extension_compiler_map[extension]
+    # extension = os.path.splitext(example_file)[1].strip(".")
+    # graph_type = config.extension_compiler_map[extension]
+
+    graph_type = get_graph_type(example_file)
 
     image_type: Literal["svg", "png", "jpeg", "pdf", "txt", "base64"] = st.selectbox(
-        "Image Type", config.extension_image_support[extension]
+        "Image Type",
+        # config.extension_image_support[extension]
+        config.graph_image_support[graph_type],
     )
     st.caption("Note that: svg is always supported.")
 
@@ -45,15 +54,22 @@ else:
         "Graph Type", ["GraphViz", "Mermaid"]
     )
 
-    image_type: Literal["svg", "png", "jpeg", "pdf", "txt", "base64"] = st.selectbox(
-        "Image Type", config.graph_image_support[graph_type]
-    )
+    if candidates := glob(os.path.join(curr_dir, "examples", graph_type, "*")):
+        example_file = candidates[0]
 
-    example = "digraph G {Hello->World}"
+        image_type: Literal[
+            "svg", "png", "jpeg", "pdf", "txt", "base64"
+        ] = st.selectbox("Image Type", config.graph_image_support[graph_type])
+
+        with open(example_file, "r") as fp:
+            example = fp.read()
+
+    else:
+        example = ""
 
 
-code_editor = utils.get_customized_code_editor()
-result_value = code_editor(example, lang=graph_type)
+code_editor = utils.get_customized_code_editor(lang=graph_type)
+result_value = code_editor(example)
 
 kroki_config = {
     "kroki_endpoint": st.session_state.kroki_endpoint,

@@ -156,7 +156,7 @@ def get_customized_code_editor(lang: str = "python") -> CustomComponent:
 
     return partial(
         code_editor,
-        # lang=lang,
+        lang="text",
         shortcuts=keyboard_binding,
         height=[5, 30],
         buttons=buttons,
