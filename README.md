@@ -2,12 +2,21 @@
 
 Streamlit-based playground that can play with Kroki
 
+[Kroki Playground](https://kroki-playground.streamlit.app/)
+
+
 ## Getting Started
 
 ```bash
 pip install -r requirements.txt
 streamlit run Overview.py
 ```
+
+## Todo
+
+- [X] Basic usage: encode user input => Kroki API => render image
+- [ ] Support all Kroki languages
+- [ ] Download raw image/svg
 
 ## Resources
 

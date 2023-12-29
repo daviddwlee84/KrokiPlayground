@@ -8,11 +8,11 @@ from io import BytesIO
 
 curr_dir = os.path.dirname(os.path.abspath(__file__))
 
-st.session_state.kroki_endpoint = st.text_input("Kroki Endpoint", "https://kroki.io/")
+st.set_page_config(page_title="Kroki Playground")
 
-"""
-# Kroki Playground
-"""
+st.title("Kroki Playground")
+
+st.session_state.kroki_endpoint = st.text_input("Kroki Endpoint", "https://kroki.io/")
 
 with st.expander("Kroki Cheatsheet"):
     st.image(
